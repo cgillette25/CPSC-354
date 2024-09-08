@@ -1,8 +1,11 @@
-# Ignore LaTeX auxiliary files
-*.aux
-*.log
-*.out
-*.toc
+# Ignore everything
+*
 
-# Ignore temporary files
-*.tmp
+# But do not ignore these files
+!report.tex
+!report.pdf
+
+# If report.pdf and report.tex are in a specific folder (e.g., /Report)
+# Uncomment the following lines and adjust as needed:
+# !/Report/report.tex
+# !/Report/report.pdf
