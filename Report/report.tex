@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{amsmath}
 \usepackage{hyperref} % For clickable links in the Table of Contents
+\usepackage{amsthm}
+
 
 \title{CPSC-354 Report}
 \author{Chaz Gillette}
@@ -73,7 +75,161 @@ For me, this was a needed refresher because it's been a moment since I took disc
 
 I'm looking forward to bridging the gap between my math knowledge and how I involve it when I code. Sometimes I feel like I have the education to understand the concepts, but I struggle to apply them when I'm coding. The speed in which I type out code is not as quick as how I think about what I'd like to apply. This first assignment was a nice intro to opening my eyes as to what it might look like to get faster at that and also write technical reports in a coding environment as well. By shifting everything I do—the code, the math, the reporting—into an IDE, I know that I'll be able to get more comfortable working in that environment.
 
+\section*{Week 2: Finishing the NNG Addition World}
+In week two, we focused on completing the Natural Number Game (NNG) Addition World, which helped solidify our understanding of addition in Lean. The problems and solutions for Levels 1-5 are listed below.
+
+\subsection*{Homework Solutions: Week 2}
+
+\subsubsection*{Level 1: zero\_add}
+\texttt{theorem zero\_add (n : nat) : 0 + n = n := by}
+
+\texttt{induction n with d hd}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rfl}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [hd]}
+
+\texttt{rfl}
+
+\subsubsection*{Level 2: succ\_add}
+\texttt{theorem succ\_add (a b : nat) : succ a + b = succ (a + b) := by}
+
+\texttt{induction b with d hd}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rfl}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [hd]}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rfl}
+
+\subsubsection*{Level 3: add\_comm}
+\texttt{theorem add\_comm (a b : nat) : a + b = b + a := by}
+
+\texttt{induction b with d hd}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rw [zero\_add]}
+
+\texttt{rfl}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [hd]}
+
+\texttt{rw [succ\_add]}
+
+\texttt{rfl}
+
+\subsubsection*{Level 4: add\_assoc}
+\texttt{theorem add\_assoc (a b c : nat) : a + b + c = a + (b + c) := by}
+
+\texttt{induction c with d hd}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rfl}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [hd]}
+
+\texttt{rw [add\_comm]}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [add\_comm]}
+
+\texttt{rfl}
+
+\subsubsection*{Level 5: add\_right\_comm}
+
+\texttt{theorem add\_right\_comm (a b c : nat) : a + b + c = a + c + b := by}
+
+\texttt{induction c with d hd}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rw [add\_zero]}
+
+\texttt{rfl}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [hd]}
+
+\texttt{rw [add\_comm]}
+
+\texttt{rw [add\_succ]}
+
+\texttt{rw [add\_comm]}
+
+\texttt{rw [succ\_add]}
+
+\texttt{rfl}
+
+\subsection*{Mathematical Proof for Level 5: add\_right\_comm}
+The goal is to prove the right commutativity of addition, meaning for all natural numbers \(a\), \(b\), and \(c\), the equation \(a + b + c = a + c + b\) holds. This is done by using induction on \(c\).
+
+\textbf{Base Case:} When \(c = 0\), we need to prove:
+\[
+a + b + 0 = a + 0 + b
+\]
+Using the identity property of addition, we know that \(a + 0 = a\) and \(0 + b = b\). Thus, both sides simplify to:
+\[
+a + b = a + b
+\]
+which is clearly true.
+
+\textbf{Inductive Step:} Assume that the right commutativity holds for some \(c\), i.e.:
+\[
+a + b + c = a + c + b
+\]
+Now, we must show that the commutativity holds for \(\text{succ}(c)\), i.e., that:
+\[
+a + b + \text{succ}(c) = a + \text{succ}(c) + b
+\]
+By the definition of the successor function and the properties of addition, we can rewrite the left-hand side:
+\[
+a + b + \text{succ}(c) = \text{succ}(a + b + c)
+\]
+By the inductive hypothesis, we know that \(a + b + c = a + c + b\), so we substitute this in:
+\[
+\text{succ}(a + c + b) = a + \text{succ}(c) + b
+\]
+which completes the inductive step. Therefore, by the principle of induction, we conclude that for all natural numbers \(a\), \(b\), and \(c\):
+\[
+a + b + c = a + c + b
+\]
+\qed
+
+\subsection*{Detailed Explanation: Level 5 Proof (add\_right\_comm)}
+In this proof the goal is to show that for all natural numbers \(a\), \(b\), and \(c\), the equation \(a + b + c = a + c + b\) holds. This is commutativity of addition. I attempted the proof by induction on \(c\).
+
+1. Base case: When \(c = 0\), the goal is to prove \(a + b + 0 = a + 0 + b\). Using the definition of addition, \(a + 0 = a\), so both sides reduce to \(a + b\). Then we rewrite tactic `rw [add\_zero]` and `rfl` confirms it.
+  
+2. Inductive step: We assume that \(a + b + c = a + c + b\) holds for some \(c\), and we must prove \(a + b + \text{succ}(c) = a + \text{succ}(c) + b\). First we rewrite the addition of the successor using the `add\_succ` rule. Then by applying the inductive hypothesis and the commutativity of addition, we can transform both sides to eventually match, proving the equality.
+
+\section*{Lessons from the Assignments}
+\subsection*{Lesson from Week 2}
+In week two we dived into the realtionship between mathematical proofs and lean proofs. We saw that the code in an of itself is a proof and in each step we are just translating into a language the lean will understand. Additionally, we spent time looking at how to prove things recursively. Looking at functions that call themselves as a solution. This requires a base case with a simple solution, like moving a single ring to the right tower, and the replace that simple solution with n so that we can continue to reduce down to our basecase and solve for any number of rings up to infinity. This is what we do in our unductive proofs, we have our base case, then our hypothesis for n + 1 and prove for all cases. 
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs.
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. 
 
 \end{document}
