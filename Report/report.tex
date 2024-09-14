@@ -12,8 +12,12 @@
 
 \maketitle
 \tableofcontents
+\newpage
 
-\section*{Week 1: Introduction to Lean and Natural Number Game Tutorial}
+
+\section{Week 1: Introduction to Lean and Natural Number Game Tutorial}
+\label{sec:week1}
+
 In week one, we worked with Lean and reviewed our discrete math knowledge in the Number Game Tutorial. Problems and solutions are listed below.
 
 \subsection*{Homework Solutions: Week 1}
@@ -75,7 +79,9 @@ For me, this was a needed refresher because it's been a moment since I took disc
 
 I'm looking forward to bridging the gap between my math knowledge and how I involve it when I code. Sometimes I feel like I have the education to understand the concepts, but I struggle to apply them when I'm coding. The speed in which I type out code is not as quick as how I think about what I'd like to apply. This first assignment was a nice intro to opening my eyes as to what it might look like to get faster at that and also write technical reports in a coding environment as well. By shifting everything I do—the code, the math, the reporting—into an IDE, I know that I'll be able to get more comfortable working in that environment.
 
-\section*{Week 2: Finishing the NNG Addition World}
+\section{Week 2: Finishing the NNG Addition World}
+\label{sec:week2}
+
 In week two, we focused on completing the Natural Number Game (NNG) Addition World, which helped solidify our understanding of addition in Lean. The problems and solutions for Levels 1-5 are listed below.
 
 \subsection*{Homework Solutions: Week 2}
@@ -229,7 +235,43 @@ In this proof the goal is to show that for all natural numbers \(a\), \(b\), and
 \section*{Lessons from the Assignments}
 \subsection*{Lesson from Week 2}
 In week two we dived into the realtionship between mathematical proofs and lean proofs. We saw that the code in an of itself is a proof and in each step we are just translating into a language the lean will understand. Additionally, we spent time looking at how to prove things recursively. Looking at functions that call themselves as a solution. This requires a base case with a simple solution, like moving a single ring to the right tower, and the replace that simple solution with n so that we can continue to reduce down to our basecase and solve for any number of rings up to infinity. This is what we do in our unductive proofs, we have our base case, then our hypothesis for n + 1 and prove for all cases. 
+
+\section{Week 3: Using LLMs for Literature Review}
+\label{sec:week3}
+
+
+In Week 3, I explored the topic of \textbf{Quantum Programming Languages} using an LLM to guide my investigation. I also began to code a computer in python without the help of any libraries.
+
+\subsection*{Link to the Full Literature Review}
+The full literature review, including the questions and answers from the LLM, can be found \href{https://github.com/cgillette25/CPSC-354/blob/main/week3/README.md}{here}.
+
+\subsection*{Discord Post}
+
+My discord name is Chaz Gillette and below is a copy of my Discord post summarizing the literature review:
+
+\begin{quote}
+For my literature review, I explored the development of quantum programming languages and their relevance in modern computing. Beginning with early theoretical work by David Deutsch on the quantum Turing machine, I traced the evolution through landmark algorithms like Shor’s and Grover’s. These breakthroughs highlighted the practical need for specialized quantum programming languages capable of expressing quantum phenomena such as superposition, entanglement, and measurement.
+
+The investigation revealed that subfields like formal language theory, type systems, and quantum information theory contributed to shaping quantum programming. For example, formal language theory provided the syntax for expressing quantum circuits, while type systems introduced linear types to track qubit usage.
+
+Influential researchers such as Peter Shor, Michael A. Nielsen, and Peter Selinger have left their mark, with Selinger notably developing the Quipper language. Modern tools like Qiskit (IBM), Cirq (Google), and Q\# (Microsoft) are now widely used in both academia and industry.
+
+In conclusion, quantum programming languages are a product of multiple converging fields, and their development is key to unlocking the full potential of quantum computing. My full investigation and references can be found in my \href{https://github.com/cgillette25/CPSC-354/blob/main/week3/README.md}{GitHub README}.
+\end{quote}
+
+\subsection*{Reviews I Voted For}
+I voted for the following two reviews after reading them:
+
+\begin{enumerate}
+    \item \href{https://github.com/mdrivas/CPSC353-Assignment3/blob/main/README.md}{Review 1}
+    \item \href{https://github.com/ATacoDev/LitReview354}{Review 2}
+\end{enumerate}
+
+\subsection*{Lessons Learned}
+In week 3 I learned a lot about what makes programming for quantum computing different; mostly this is to do with the less binary nature of quantum computing compared to current computers. Outside of my report I learned how to break down order of operations when coding. Using functions to call other funcitons within parenthesis and begin to tackle the math equations like a real calculator would. 
+
+
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. 
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. The following week I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parenthesis. 
 
 \end{document}
