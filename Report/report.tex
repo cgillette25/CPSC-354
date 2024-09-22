@@ -2,6 +2,8 @@
 \usepackage{amsmath}
 \usepackage{hyperref} % For clickable links in the Table of Contents
 \usepackage{amsthm}
+\usepackage{pdfpages}
+\usepackage{graphicx}
 
 
 \title{CPSC-354 Report}
@@ -250,7 +252,7 @@ The full literature review, including the questions and answers from the LLM, ca
 My discord name is Chaz Gillette and below is a copy of my Discord post summarizing the literature review:
 
 \begin{quote}
-For my literature review, I explored the development of quantum programming languages and their relevance in modern computing. Beginning with early theoretical work by David Deutsch on the quantum Turing machine, I traced the evolution through landmark algorithms like Shor’s and Grover’s. These breakthroughs highlighted the practical need for specialized quantum programming languages capable of expressing quantum phenomena such as superposition, entanglement, and measurement.
+For my literature review, I explored the development of quantum programming languages and their relevance in modern computing. Beginning with early theoretical work by David Deutsch on the quantum Turing machine, I traced the evolution through landmark algorithms like Shor's and Grover's. These breakthroughs highlighted the practical need for specialized quantum programming languages capable of expressing quantum phenomena such as superposition, entanglement, and measurement.
 
 The investigation revealed that subfields like formal language theory, type systems, and quantum information theory contributed to shaping quantum programming. For example, formal language theory provided the syntax for expressing quantum circuits, while type systems introduced linear types to track qubit usage.
 
@@ -270,8 +272,63 @@ I voted for the following two reviews after reading them:
 \subsection*{Lessons Learned}
 In week 3 I learned a lot about what makes programming for quantum computing different; mostly this is to do with the less binary nature of quantum computing compared to current computers. Outside of my report I learned how to break down order of operations when coding. Using functions to call other funcitons within parenthesis and begin to tackle the math equations like a real calculator would. 
 
+\section{Week 4: Introduction to Parsing and Context-Free Grammars}
+\label{sec:week4}
+
+In Week 4, we delved into the concepts of parsing and context-free grammars, exploring how they are used to translate concrete syntax into abstract syntax. This is a crucial step in understanding how programming languages are processed and interpreted.
+
+\subsection*{Key Concepts}
+
+\begin{itemize}
+    \item Concrete syntax: Represents a program as a string (e.g., "1 + 2 * 3")
+    \item Abstract syntax: Represents a program as a tree structure
+    \item Parsing: The process of transforming concrete syntax into abstract syntax
+    \item Context-free grammar: A set of rules that define the structure of a language
+\end{itemize}
+
+\subsection*{Context-Free Grammar for Arithmetic Expressions}
+
+We studied the following context-free grammar for arithmetic expressions:
+
+\begin{verbatim}
+Exp -> Exp '+' Exp1 
+Exp1 -> Exp1 '*' Exp2              
+Exp2 -> Integer            
+Exp2 -> '(' Exp ')'  
+Exp -> Exp1             
+Exp1 -> Exp2
+\end{verbatim}
+
+\subsection*{Homework Solutions: Week 4}
+
+For the homework, we were asked to parse various expressions using the given context-free grammar. Here are the step-by-step derivations for each problem:
+
+\includegraphics[width=\textwidth, page=1]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+
+\includegraphics[width=\textwidth, page=2]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+
+\includegraphics[width=\textwidth, page=3]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+
+\includegraphics[width=\textwidth, page=4]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+
+\includegraphics[width=\textwidth, page=5]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+
+The parsing process demonstrates how the grammar rules are applied to derive the final expression, showing the hierarchical structure of the arithmetic operation.
+
+\subsection*{Lessons Learned}
+
+In Week 4, I gained several important insights:
+
+\begin{enumerate}
+    \item The importance of context-free grammars in defining the structure of programming languages
+    \item How parsing bridges the gap between concrete syntax (what we write) and abstract syntax (how the computer interprets it)
+    \item The hierarchical nature of expressions and how this is captured in abstract syntax trees
+    \item The role of parsing in compiler design and language processing
+\end{enumerate}
+
+This week's content has deepened my understanding of how programming languages are structured and interpreted, providing a foundation for more advanced topics in language design and implementation.
 
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. The following week I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parenthesis. 
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. The following week I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parenthesis. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed.
 
 \end{document}
