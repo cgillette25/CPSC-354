@@ -1,13 +1,12 @@
 # Ignore everything
 *
 
-# But do not ignore these files
+# Do not ignore directories
+!*/
+
+# Do not ignore specific files and folders
 !report.tex
 !report.pdf
+!Assignment1
 !Assignment1/*
 
-
-# If report.pdf and report.tex are in a specific folder (e.g., /Report)
-# Uncomment the following lines and adjust as needed:
-# !/Report/report.tex
-# !/Report/report.pdf
