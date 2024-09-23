@@ -4,6 +4,8 @@
 # But do not ignore these files
 !report.tex
 !report.pdf
+!Assignment1/*
+
 
 # If report.pdf and report.tex are in a specific folder (e.g., /Report)
 # Uncomment the following lines and adjust as needed:
