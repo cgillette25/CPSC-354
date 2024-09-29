@@ -4,7 +4,27 @@
 \usepackage{amsthm}
 \usepackage{pdfpages}
 \usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+% Removed fontspec and setmonofont as they're typically used with XeLaTeX or LuaLaTeX
 
+\usepackage{xcolor}
+
+% Combined Lean Style Definition
+\lstdefinestyle{leanstyle}{
+    language=Python, % Using Python as a base for syntax highlighting
+    basicstyle=\ttfamily\small,
+    keywordstyle=\bfseries\color{blue},
+    commentstyle=\itshape\color{gray},
+    stringstyle=\color{orange},
+    mathescape=true, % Allows math symbols in the listing
+    escapeinside={(*@}{@*)}, % Custom escape characters for LaTeX
+    literate={⟨}{{$\langle$}}1 {⟩}{{$\rangle$}}1 {∧}{{$\land$}}1 {\\/}{{$\lor$}}1 {¬}{{$\lnot$}}1,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    keepspaces=true,
+    columns=flexible,
+}
 
 \title{CPSC-354 Report}
 \author{Chaz Gillette}
@@ -252,13 +272,8 @@ The full literature review, including the questions and answers from the LLM, ca
 My discord name is Chaz Gillette and below is a copy of my Discord post summarizing the literature review:
 
 \begin{quote}
-For my literature review, I explored the development of quantum programming languages and their relevance in modern computing. Beginning with early theoretical work by David Deutsch on the quantum Turing machine, I traced the evolution through landmark algorithms like Shor's and Grover's. These breakthroughs highlighted the practical need for specialized quantum programming languages capable of expressing quantum phenomena such as superposition, entanglement, and measurement.
-
-The investigation revealed that subfields like formal language theory, type systems, and quantum information theory contributed to shaping quantum programming. For example, formal language theory provided the syntax for expressing quantum circuits, while type systems introduced linear types to track qubit usage.
-
-Influential researchers such as Peter Shor, Michael A. Nielsen, and Peter Selinger have left their mark, with Selinger notably developing the Quipper language. Modern tools like Qiskit (IBM), Cirq (Google), and Q\# (Microsoft) are now widely used in both academia and industry.
-
-In conclusion, quantum programming languages are a product of multiple converging fields, and their development is key to unlocking the full potential of quantum computing. My full investigation and references can be found in my \href{https://github.com/cgillette25/CPSC-354/blob/main/week3/README.md}{GitHub README}.
+\small
+"What are some of the key differences between classical logic and constructive logic that we should be mindful of when working through the Lean tutorials?"
 \end{quote}
 
 \subsection*{Reviews I Voted For}
@@ -328,7 +343,96 @@ In Week 4, I gained several important insights:
 
 This week's content has deepened my understanding of how programming languages are structured and interpreted, providing a foundation for more advanced topics in language design and implementation.
 
+\section{Week 5: Logic Game Tutorial and Lecture Content}
+\label{sec:week5}
+
+In Week 5, we focused on the content covered in the lectures and completed the Lean logic game's tutorial world. Below are the solutions for Levels 1 through 8, along with a proof for Level 8 written in mathematical logic.
+
+\subsection*{Solutions: Lean Logic Game Tutorial}
+\hfill\break
+
+\begin{enumerate}
+    \item \textbf{Level 1:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (P : Prop)(todo_list : P) : P := by
+exact todo_list
+    \end{lstlisting}
+
+    \item \textbf{Level 2:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (P S : Prop)(p: P)(s : S) : P ∧ S := by
+exact ⟨p,s⟩
+    \end{lstlisting}
+
+    \item \textbf{Level 3:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (A I O U : Prop)(a : A)(i : I)(o : O)(u : U) : (A ∧ I) ∧ O ∧ U := by
+exact ⟨⟨a,i⟩,o,u⟩
+    \end{lstlisting}
+
+    \item \textbf{Level 4:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (P S : Prop)(vm: P ∧ S) : P := by
+exact vm.left
+    \end{lstlisting}
+
+    \item \textbf{Level 5:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (P Q : Prop)(h: P ∧ Q) : Q := by
+exact h.right
+    \end{lstlisting}
+
+    \item \textbf{Level 6:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (A I O U : Prop)(h1 : A ∧ I)(h2 : O ∧ U) : A ∧ U := by
+exact ⟨h1.left, h2.right⟩
+    \end{lstlisting}
+
+    \item \textbf{Level 7:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (C L : Prop)(h: (L ∧ (((L ∧ C) ∧ L) ∧ L ∧ L ∧ L)) ∧ (L ∧ L) ∧ L) : C := by
+exact h.left.right.left.left.right
+    \end{lstlisting}
+
+    \item \textbf{Level 8:} \\
+    \begin{lstlisting}[style=leanstyle]
+example (A C I O P S U : Prop)
+(h: ((P ∧ S) ∧ A) ∧ ¬I ∧ (C ∧ ¬O) ∧ ¬U) : A ∧ C ∧ P ∧ S := by
+exact ⟨h.left.right, h.right.right.left.left, h.left.left.left, h.left.left.right⟩
+    \end{lstlisting}
+\end{enumerate}
+
+
+
+\subsection*{Level 8: Formal Proof in Mathematical Logic}
+
+We want to show: If \(((P \land S) \land A) \land \neg I \land (C \land \neg O) \land \neg U\), then \(A \land C \land P \land S\).
+
+\textbf{Proof:}
+
+\begin{enumerate}
+    \item \( (P \land S) \land A \) \hfill assumption
+    \item \( \neg I \) \hfill assumption
+    \item \( C \land \neg O \) \hfill assumption
+    \item \( \neg U \) \hfill assumption
+    \item \( A \) \hfill and\_right (1)
+    \item \( C \) \hfill and\_left (3)
+    \item \( P \) \hfill and\_left (1)
+    \item \( S \) \hfill and\_right (1)
+    \item \( A \land C \land P \land S \) \hfill and\_intro (5) (6) (7) (8)
+\end{enumerate}
+
+\subsection*{Discussion Question on Discord}
+
+During this week's assignment, I asked the following question on Discord:
+
+\begin{quote}
+\small
+"How scalable is Lean if applied to large-scale software verification projects?"
+\end{quote}
+
+
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. The following week I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parenthesis. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed.
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. The following week I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parenthesis. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used lean as a way of proving logic puzzles.
 
 \end{document}
