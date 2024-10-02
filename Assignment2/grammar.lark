@@ -1,13 +1,22 @@
-?start: exp
+?start: sum
 
-?exp: exp "+" exp1            -> plus
-   | exp1
+?sum: sum "+" term   -> plus
+    | sum "-" term   -> minus
+    | term
 
-?exp1: exp1 "*" exp2          -> times
-    | exp2
+?term: term "*" factor  -> times
+     | term "/" factor  -> divide
+     | factor
 
-?exp2: NUMBER                 -> num
-    | "(" exp ")"                                  
+?factor: "-" factor     -> neg
+       | power
+
+?power: atom "^" power  -> power
+      | atom
+
+?atom: "log" atom "base" atom  -> logbase
+     | "(" sum ")"             -> paren
+     | NUMBER                  -> num
 
 %import common.NUMBER
 %import common.WS
