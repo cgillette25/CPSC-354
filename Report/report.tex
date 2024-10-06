@@ -1,30 +1,48 @@
 \documentclass{article}
+\usepackage[utf8]{inputenc}   % Allows the use of UTF-8 characters
+\usepackage[T1]{fontenc}      % Ensures proper font encoding
 \usepackage{amsmath}
-\usepackage{hyperref} % For clickable links in the Table of Contents
+\usepackage{amssymb}          % For additional math symbols
+\usepackage{mathtools}        % For extended math features
 \usepackage{amsthm}
-\usepackage{pdfpages}
 \usepackage{graphicx}
-\usepackage[T1]{fontenc}
+\usepackage{hyperref}         % For clickable links in the Table of Contents
 \usepackage{listings}
-% Removed fontspec and setmonofont as they're typically used with XeLaTeX or LuaLaTeX
-
 \usepackage{xcolor}
 
-% Combined Lean Style Definition
+% Lean Style Definition for Listings
 \lstdefinestyle{leanstyle}{
-    language=Python, % Using Python as a base for syntax highlighting
+    language=Python,
     basicstyle=\ttfamily\small,
     keywordstyle=\bfseries\color{blue},
     commentstyle=\itshape\color{gray},
     stringstyle=\color{orange},
-    mathescape=true, % Allows math symbols in the listing
-    escapeinside={(*@}{@*)}, % Custom escape characters for LaTeX
-    literate={⟨}{{$\langle$}}1 {⟩}{{$\rangle$}}1 {∧}{{$\land$}}1 {\\/}{{$\lor$}}1 {¬}{{$\lnot$}}1,
+    mathescape=true,
+    escapeinside={(*@}{@*)},
+    literate=
+    {⟨}{{$\langle$}}1
+    {⟩}{{$\rangle$}}1
+    {∧}{{$\land$}}1
+    {∨}{{$\lor$}}1
+    {¬}{{$\lnot$}}1
+    {λ}{{$\lambda$}}1
+    {→}{{$\rightarrow$}}1
+    {∀}{{$\forall$}}1
+    {∃}{{$\exists$}}1
+    {≠}{{$\neq$}}1
+    {≤}{{$\leq$}}1
+    {≥}{{$\geq$}}1
+    {≡}{{$\equiv$}}1
+    {…}{{$\ldots$}}1
+    {×}{{$\times$}}1
+    {𝔽}{{$\mathbb{F}$}}1
+    {ℕ}{{$\mathbb{N}$}}1,
     breaklines=true,
     postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
     keepspaces=true,
     columns=flexible,
 }
+
 
 \title{CPSC-354 Report}
 \author{Chaz Gillette}
@@ -36,7 +54,6 @@
 \tableofcontents
 \newpage
 
-
 \section{Week 1: Introduction to Lean and Natural Number Game Tutorial}
 \label{sec:week1}
 
@@ -45,53 +62,61 @@ In week one, we worked with Lean and reviewed our discrete math knowledge in the
 \subsection*{Homework Solutions: Week 1}
 
 \subsubsection*{Level 5}
-\texttt{a + (b + 0) + (c + 0) = a + b + c.}
+\begin{lstlisting}[style=leanstyle]
+a + (b + 0) + (c + 0) = a + b + c.
 
-\texttt{rw [add\_zero]}
+rw [add_zero]
 
-\texttt{rw [add\_zero]}
+rw [add_zero]
 
-\texttt{rfl}
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 6}
-\texttt{a + (b + 0) + (c + 0) = a + b + c.}
+\begin{lstlisting}[style=leanstyle]
+a + (b + 0) + (c + 0) = a + b + c.
 
-\texttt{rw [add\_zero c]}
+rw [add_zero c]
 
-\texttt{rw [add\_zero b]}
+rw [add_zero b]
 
-\texttt{rfl}
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 7: succ\_eq\_add\_one Theorem}
-\texttt{Theorem succ\_eq\_add\_one: For all natural numbers a, we have succ(a) = a + 1}
+\begin{lstlisting}[style=leanstyle]
+Theorem succ_eq_add_one: For all natural numbers a, we have succ(a) = a + 1
 
-\texttt{rw [one\_eq\_succ\_zero]}
+rw [one_eq_succ_zero]
 
-\texttt{rw [add\_succ]}
+rw [add_succ]
 
-\texttt{rw [add\_zero]}
+rw [add_zero]
 
-\texttt{rfl}
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 8: 2 + 2 = 4}
-\texttt{2 + 2 = 4.}
+\begin{lstlisting}[style=leanstyle]
+2 + 2 = 4.
 
-\texttt{nth\_rewrite 2 [two\_eq\_succ\_one] -- only change the second `2` to `succ 1`.}
+nth_rewrite 2 [two_eq_succ_one]  -- only change the second `2` to `succ 1`.
 
-\texttt{rw [add\_succ]}
+rw [add_succ]
 
-\texttt{rw [one\_eq\_succ\_zero]}
+rw [one_eq_succ_zero]
 
-\texttt{rw [add\_succ, add\_zero] -- two rewrites at once}
+rw [add_succ, add_zero]  -- two rewrites at once
 
-\texttt{rw [\textbackslash three\_eq\_succ\_two] -- change `succ 2` to `3`}
+rw [three_eq_succ_two]  -- change `succ 2` to `3`
 
-\texttt{rw [\textbackslash four\_eq\_succ\_three]}
+rw [four_eq_succ_three]
 
-\texttt{rfl}
+rfl
+\end{lstlisting}
 
 \subsection*{Detailed Explanation: Level 7 Proof}
-I chose to explain the proof for level seven because this is where we make the breakthrough with addition. Our goal is to prove that the successor of \(a\) is equal to \(a + 1\). So, in step one, we want to rewrite one as the successor of zero. That gives us \(\text{succ } n = n + \text{succ } 0\). The next step is `add\_succ` so that \(\text{succ } n = \text{succ } (n + 0)\). After that, we can remove the zero by `rw [add\_zero]`, which will leave us with \(\text{succ } n = \text{succ } n\), which is thus proven true with the reflexive property.
+I chose to explain the proof for level seven because this is where we make the breakthrough with addition. Our goal is to prove that the successor of \(a\) is equal to \(a + 1\). So, in step one, we want to rewrite one as the successor of zero. That gives us \(\text{succ } a = a + \text{succ } 0\). The next step is \texttt{add\_succ} so that \(\text{succ } a = \text{succ } (a + 0)\). After that, we can remove the zero by \texttt{rw [add\_zero]}, which will leave us with \(\text{succ } a = \text{succ } a\), which is thus proven true with the reflexive property.
 
 \section*{Lessons from the Assignments}
 \subsection*{Lesson from Week 1}
@@ -109,108 +134,68 @@ In week two, we focused on completing the Natural Number Game (NNG) Addition Wor
 \subsection*{Homework Solutions: Week 2}
 
 \subsubsection*{Level 1: zero\_add}
-\texttt{theorem zero\_add (n : nat) : 0 + n = n := by}
-
-\texttt{induction n with d hd}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rfl}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [hd]}
-
-\texttt{rfl}
+\begin{lstlisting}[style=leanstyle]
+theorem zero_add (n : nat) : 0 + n = n := by
+induction n with d hd
+rw [add_zero]
+rfl
+rw [add_succ]
+rw [hd]
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 2: succ\_add}
-\texttt{theorem succ\_add (a b : nat) : succ a + b = succ (a + b) := by}
-
-\texttt{induction b with d hd}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rfl}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [hd]}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rfl}
+\begin{lstlisting}[style=leanstyle]
+theorem succ_add (a b : nat) : succ a + b = succ (a + b) := by
+induction b with d hd
+rw [add_zero]
+rw [add_zero]
+rfl
+rw [add_succ]
+rw [hd]
+rw [add_succ]
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 3: add\_comm}
-\texttt{theorem add\_comm (a b : nat) : a + b = b + a := by}
-
-\texttt{induction b with d hd}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rw [zero\_add]}
-
-\texttt{rfl}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [hd]}
-
-\texttt{rw [succ\_add]}
-
-\texttt{rfl}
+\begin{lstlisting}[style=leanstyle]
+theorem add_comm (a b : nat) : a + b = b + a := by
+induction b with d hd
+rw [add_zero]
+rw [zero_add]
+rfl
+rw [add_succ]
+rw [hd]
+rw [succ_add]
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 4: add\_assoc}
-\texttt{theorem add\_assoc (a b c : nat) : a + b + c = a + (b + c) := by}
-
-\texttt{induction c with d hd}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rfl}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [hd]}
-
-\texttt{rw [add\_comm]}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [add\_comm]}
-
-\texttt{rfl}
+\begin{lstlisting}[style=leanstyle]
+theorem add_assoc (a b c : nat) : a + b + c = a + (b + c) := by
+induction c with d hd
+rw [add_zero]
+rw [add_zero]
+rfl
+rw [add_succ]
+rw [hd]
+rw [add_succ]
+rfl
+\end{lstlisting}
 
 \subsubsection*{Level 5: add\_right\_comm}
-
-\texttt{theorem add\_right\_comm (a b c : nat) : a + b + c = a + c + b := by}
-
-\texttt{induction c with d hd}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rw [add\_zero]}
-
-\texttt{rfl}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [hd]}
-
-\texttt{rw [add\_comm]}
-
-\texttt{rw [add\_succ]}
-
-\texttt{rw [add\_comm]}
-
-\texttt{rw [succ\_add]}
-
-\texttt{rfl}
+\begin{lstlisting}[style=leanstyle]
+theorem add_right_comm (a b c : nat) : a + b + c = a + c + b := by
+induction c with d hd
+rw [add_zero]
+rw [add_zero]
+rfl
+rw [add_succ]
+rw [hd]
+rw [add_succ]
+rw [add_comm b d]
+rfl
+\end{lstlisting}
 
 \subsection*{Mathematical Proof for Level 5: add\_right\_comm}
 The goal is to prove the right commutativity of addition, meaning for all natural numbers \(a\), \(b\), and \(c\), the equation \(a + b + c = a + c + b\) holds. This is done by using induction on \(c\).
@@ -219,57 +204,56 @@ The goal is to prove the right commutativity of addition, meaning for all natura
 \[
 a + b + 0 = a + 0 + b
 \]
-Using the identity property of addition, we know that \(a + 0 = a\) and \(0 + b = b\). Thus, both sides simplify to:
+Using the identity property of addition, we know that \(a + 0 = a\) and \(a + b + 0 = a + b\). Thus, both sides simplify to:
 \[
 a + b = a + b
 \]
-which is clearly true.
+which is true.
 
-\textbf{Inductive Step:} Assume that the right commutativity holds for some \(c\), i.e.:
+\textbf{Inductive Step:} Assume that \(a + b + c = a + c + b\) holds for some \(c\). Now, we must show that it holds for \(c + 1\):
 \[
-a + b + c = a + c + b
+a + b + (c + 1) = a + (c + 1) + b
 \]
-Now, we must show that the commutativity holds for \(\text{succ}(c)\), i.e., that:
-\[
-a + b + \text{succ}(c) = a + \text{succ}(c) + b
-\]
-By the definition of the successor function and the properties of addition, we can rewrite the left-hand side:
-\[
-a + b + \text{succ}(c) = \text{succ}(a + b + c)
-\]
-By the inductive hypothesis, we know that \(a + b + c = a + c + b\), so we substitute this in:
-\[
-\text{succ}(a + c + b) = a + \text{succ}(c) + b
-\]
-which completes the inductive step. Therefore, by the principle of induction, we conclude that for all natural numbers \(a\), \(b\), and \(c\):
-\[
-a + b + c = a + c + b
-\]
-\qed
+Using the associative and commutative properties, and the inductive hypothesis, we can manipulate the expression to prove the equality.
 
 \subsection*{Detailed Explanation: Level 5 Proof (add\_right\_comm)}
-In this proof the goal is to show that for all natural numbers \(a\), \(b\), and \(c\), the equation \(a + b + c = a + c + b\) holds. This is commutativity of addition. I attempted the proof by induction on \(c\).
+In this proof, the goal is to show that for all natural numbers \(a\), \(b\), and \(c\), the equation \(a + b + c = a + c + b\) holds. This is the right commutativity of addition. The proof is done by induction on \(c\).
 
-1. Base case: When \(c = 0\), the goal is to prove \(a + b + 0 = a + 0 + b\). Using the definition of addition, \(a + 0 = a\), so both sides reduce to \(a + b\). Then we rewrite tactic `rw [add\_zero]` and `rfl` confirms it.
-  
-2. Inductive step: We assume that \(a + b + c = a + c + b\) holds for some \(c\), and we must prove \(a + b + \text{succ}(c) = a + \text{succ}(c) + b\). First we rewrite the addition of the successor using the `add\_succ` rule. Then by applying the inductive hypothesis and the commutativity of addition, we can transform both sides to eventually match, proving the equality.
+1. **Base Case (\(c = 0\)):** We need to prove \(a + b + 0 = a + 0 + b\). Since adding zero doesn't change the value, both sides simplify to \(a + b\), which are equal.
+
+2. **Inductive Step:** Assume the statement holds for some \(c\). That is, \(a + b + c = a + c + b\). We need to show \(a + b + (c + 1) = a + (c + 1) + b\).
+
+   - Starting with the left side:
+     \[
+     a + b + (c + 1) = (a + b + c) + 1
+     \]
+   - By the inductive hypothesis:
+     \[
+     (a + c + b) + 1 = a + c + (b + 1)
+     \]
+   - Since addition is associative:
+     \[
+     a + (c + (b + 1)) = a + ((c + 1) + b)
+     \]
+   - Therefore, the right-hand side matches, proving the statement.
 
 \section*{Lessons from the Assignments}
 \subsection*{Lesson from Week 2}
-In week two we dived into the realtionship between mathematical proofs and lean proofs. We saw that the code in an of itself is a proof and in each step we are just translating into a language the lean will understand. Additionally, we spent time looking at how to prove things recursively. Looking at functions that call themselves as a solution. This requires a base case with a simple solution, like moving a single ring to the right tower, and the replace that simple solution with n so that we can continue to reduce down to our basecase and solve for any number of rings up to infinity. This is what we do in our unductive proofs, we have our base case, then our hypothesis for n + 1 and prove for all cases. 
+In week two, we delved deeper into the relationship between mathematical proofs and Lean code proofs. We learned how to perform proofs recursively, using induction. This requires establishing a base case and then proving that if the statement holds for \(n\), it also holds for \(n + 1\). By doing so, we can prove statements for all natural numbers.
+
+I learned how to translate mathematical induction into Lean code, which strengthened my understanding of both programming and mathematical proof techniques. This experience highlighted the importance of rigorous logical reasoning in coding proofs.
 
 \section{Week 3: Using LLMs for Literature Review}
 \label{sec:week3}
 
-
-In Week 3, I explored the topic of \textbf{Quantum Programming Languages} using an LLM to guide my investigation. I also began to code a computer in python without the help of any libraries.
+In Week 3, I explored the topic of \textbf{Quantum Programming Languages} using an LLM to guide my investigation. I also began to code a computer in Python without the help of any libraries.
 
 \subsection*{Link to the Full Literature Review}
-The full literature review, including the questions and answers from the LLM, can be found \href{https://github.com/cgillette25/CPSC-354/blob/main/week3/README.md}{here}.
+The full literature review, including the questions and answers from the LLM, can be found \href{https://github.com/cgillette/CPSC-354/blob/main/week3/README.md}{here}.
 
 \subsection*{Discord Post}
 
-My discord name is Chaz Gillette and below is a copy of my Discord post summarizing the literature review:
+My Discord name is Chaz Gillette, and below is a copy of my Discord post summarizing the literature review:
 
 \begin{quote}
 \small
@@ -285,7 +269,7 @@ I voted for the following two reviews after reading them:
 \end{enumerate}
 
 \subsection*{Lessons Learned}
-In week 3 I learned a lot about what makes programming for quantum computing different; mostly this is to do with the less binary nature of quantum computing compared to current computers. Outside of my report I learned how to break down order of operations when coding. Using functions to call other funcitons within parenthesis and begin to tackle the math equations like a real calculator would. 
+In week 3, I learned a lot about what makes programming for quantum computing different; mostly, this has to do with the non-binary nature of quantum computing compared to current computers. Outside of my report, I learned how to break down order of operations when coding. Using functions to call other functions within parentheses, I began to tackle mathematical equations like a real calculator would.
 
 \section{Week 4: Introduction to Parsing and Context-Free Grammars}
 \label{sec:week4}
@@ -295,10 +279,10 @@ In Week 4, we delved into the concepts of parsing and context-free grammars, exp
 \subsection*{Key Concepts}
 
 \begin{itemize}
-    \item Concrete syntax: Represents a program as a string (e.g., "1 + 2 * 3")
-    \item Abstract syntax: Represents a program as a tree structure
-    \item Parsing: The process of transforming concrete syntax into abstract syntax
-    \item Context-free grammar: A set of rules that define the structure of a language
+    \item \textbf{Concrete syntax}: Represents a program as a string (e.g., "1 + 2 * 3")
+    \item \textbf{Abstract syntax}: Represents a program as a tree structure
+    \item \textbf{Parsing}: The process of transforming concrete syntax into abstract syntax
+    \item \textbf{Context-free grammar}: A set of rules that define the structure of a language
 \end{itemize}
 
 \subsection*{Context-Free Grammar for Arithmetic Expressions}
@@ -316,19 +300,39 @@ Exp1 -> Exp2
 
 \subsection*{Homework Solutions: Week 4}
 
-For the homework, we were asked to parse various expressions using the given context-free grammar. Here are the step-by-step derivations for each problem:
+For the homework, we were asked to parse various expressions using the given context-free grammar. The step-by-step derivations for each problem are figures 1-5 after the conclusion.
 
-\includegraphics[width=\textwidth, page=1]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth, page=1]{DerivationTrees.pdf}
+\caption{Derivation Tree for Expression 1}
+\end{figure}
 
-\includegraphics[width=\textwidth, page=2]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth, page=2]{DerivationTrees.pdf}
+\caption{Derivation Tree for Expression 2}
+\end{figure}
 
-\includegraphics[width=\textwidth, page=3]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth, page=3]{DerivationTrees.pdf}
+\caption{Derivation Tree for Expression 3}
+\end{figure}
 
-\includegraphics[width=\textwidth, page=4]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth, page=4]{DerivationTrees.pdf}
+\caption{Derivation Tree for Expression 4}
+\end{figure}
 
-\includegraphics[width=\textwidth, page=5]{/Users/cgillette/CPSC-354/Report/DerivationTrees.pdf}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth, page=5]{DerivationTrees.pdf}
+\caption{Derivation Tree for Expression 5}
+\end{figure}
 
-The parsing process demonstrates how the grammar rules are applied to derive the final expression, showing the hierarchical structure of the arithmetic operation.
+The parsing process demonstrates how the grammar rules are applied to derive the final expression, showing the hierarchical structure of the arithmetic operations.
 
 \subsection*{Lessons Learned}
 
@@ -349,60 +353,57 @@ This week's content has deepened my understanding of how programming languages a
 In Week 5, we focused on the content covered in the lectures and completed the Lean logic game's tutorial world. Below are the solutions for Levels 1 through 8, along with a proof for Level 8 written in mathematical logic.
 
 \subsection*{Solutions: Lean Logic Game Tutorial}
-\hfill\break
 
 \begin{enumerate}
-    \item \textbf{Level 1:} \\
+    \item \textbf{Level 1:}
     \begin{lstlisting}[style=leanstyle]
 example (P : Prop)(todo_list : P) : P := by
 exact todo_list
     \end{lstlisting}
 
-    \item \textbf{Level 2:} \\
+    \item \textbf{Level 2:}
     \begin{lstlisting}[style=leanstyle]
 example (P S : Prop)(p: P)(s : S) : P ∧ S := by
-exact ⟨p,s⟩
+exact ⟨p, s⟩
     \end{lstlisting}
 
-    \item \textbf{Level 3:} \\
+    \item \textbf{Level 3:}
     \begin{lstlisting}[style=leanstyle]
 example (A I O U : Prop)(a : A)(i : I)(o : O)(u : U) : (A ∧ I) ∧ O ∧ U := by
-exact ⟨⟨a,i⟩,o,u⟩
+exact ⟨⟨a, i⟩, o, u⟩
     \end{lstlisting}
 
-    \item \textbf{Level 4:} \\
+    \item \textbf{Level 4:}
     \begin{lstlisting}[style=leanstyle]
 example (P S : Prop)(vm: P ∧ S) : P := by
 exact vm.left
     \end{lstlisting}
 
-    \item \textbf{Level 5:} \\
+    \item \textbf{Level 5:}
     \begin{lstlisting}[style=leanstyle]
 example (P Q : Prop)(h: P ∧ Q) : Q := by
 exact h.right
     \end{lstlisting}
 
-    \item \textbf{Level 6:} \\
+    \item \textbf{Level 6:}
     \begin{lstlisting}[style=leanstyle]
 example (A I O U : Prop)(h1 : A ∧ I)(h2 : O ∧ U) : A ∧ U := by
 exact ⟨h1.left, h2.right⟩
     \end{lstlisting}
 
-    \item \textbf{Level 7:} \\
+    \item \textbf{Level 7:}
     \begin{lstlisting}[style=leanstyle]
 example (C L : Prop)(h: (L ∧ (((L ∧ C) ∧ L) ∧ L ∧ L ∧ L)) ∧ (L ∧ L) ∧ L) : C := by
 exact h.left.right.left.left.right
     \end{lstlisting}
 
-    \item \textbf{Level 8:} \\
+    \item \textbf{Level 8:}
     \begin{lstlisting}[style=leanstyle]
 example (A C I O P S U : Prop)
 (h: ((P ∧ S) ∧ A) ∧ ¬I ∧ (C ∧ ¬O) ∧ ¬U) : A ∧ C ∧ P ∧ S := by
-exact ⟨h.left.right, h.right.right.left.left, h.left.left.left, h.left.left.right⟩
+exact ⟨h.left.right, h.right.right.left, h.left.left.left, h.left.left.right⟩
     \end{lstlisting}
 \end{enumerate}
-
-
 
 \subsection*{Level 8: Formal Proof in Mathematical Logic}
 
@@ -410,17 +411,17 @@ We want to show: If \(((P \land S) \land A) \land \neg I \land (C \land \neg O) 
 
 \textbf{Proof:}
 
-\begin{enumerate}
-    \item \( (P \land S) \land A \) \hfill assumption
-    \item \( \neg I \) \hfill assumption
-    \item \( C \land \neg O \) \hfill assumption
-    \item \( \neg U \) \hfill assumption
-    \item \( A \) \hfill and\_right (1)
-    \item \( C \) \hfill and\_left (3)
-    \item \( P \) \hfill and\_left (1)
-    \item \( S \) \hfill and\_right (1)
-    \item \( A \land C \land P \land S \) \hfill and\_intro (5) (6) (7) (8)
-\end{enumerate}
+1. From \(((P \land S) \land A)\), we have:
+   - \(P \land S\) (left side)
+   - \(A\) (right side)
+
+2. From \(P \land S\), we have:
+   - \(P\)
+   - \(S\)
+
+3. From \(C \land \neg O\), we have \(C\).
+
+4. Therefore, combining \(A\), \(C\), \(P\), and \(S\), we get \(A \land C \land P \land S\).
 
 \subsection*{Discussion Question on Discord}
 
@@ -431,8 +432,89 @@ During this week's assignment, I asked the following question on Discord:
 "How scalable is Lean if applied to large-scale software verification projects?"
 \end{quote}
 
+\section{Week 6: Implication in Lean Logic}
+\label{sec:week6}
+
+In Week 6, we delved into the concept of implication using the Lean Logic game tutorial. This week focused on understanding and applying implication in logical propositions.
+
+\subsection*{Key Concepts}
+
+\begin{itemize}
+    \item Implication in propositional logic
+    \item Lambda functions in Lean
+    \item Conjunction (\(\land\)) and its relationship with implication
+    \item Function composition in logical proofs
+\end{itemize}
+
+\subsection*{Lean Logic Game Tutorial Solutions}
+
+We completed levels 1-9 of the Lean Logic game tutorial, focusing on implication. Here are the solutions:
+
+\begin{enumerate}
+    \item \textbf{Level 1:}
+    \begin{lstlisting}[style=leanstyle]
+example (P C: Prop)(p: P)(bakery_service : P → C) : C := by 
+exact bakery_service p
+    \end{lstlisting}
+
+    \item \textbf{Level 2:}
+    \begin{lstlisting}[style=leanstyle]
+example (C: Prop) : C → C := by
+exact λ h : C, h
+    \end{lstlisting}
+
+    \item \textbf{Level 3:}
+    \begin{lstlisting}[style=leanstyle]
+example (I S: Prop) : I ∧ S → S ∧ I := by
+exact λ h : I ∧ S, ⟨h.right, h.left⟩
+    \end{lstlisting}
+
+    \item \textbf{Level 4:}
+    \begin{lstlisting}[style=leanstyle]
+example (C A S: Prop) (h1 : C → A) (h2 : A → S) : C → S := by
+exact λ c : C, h2 (h1 c)
+    \end{lstlisting}
+
+    \item \textbf{Level 5:}
+    \begin{lstlisting}[style=leanstyle]
+example (P Q R S T U: Prop) (p : P)
+(h1 : P → Q) (h2 : Q → R) (h3 : Q → T)
+(h4 : S → T) (h5 : T → U) : U := by
+exact h5 (h3 (h1 p))
+    \end{lstlisting}
+
+    \item \textbf{Level 6:}
+    \begin{lstlisting}[style=leanstyle]
+example (C D S: Prop) (h : C ∧ D → S) : C → D → S := by
+exact λ c d, h ⟨c, d⟩
+    \end{lstlisting}
+
+    \item \textbf{Level 7:}
+    \begin{lstlisting}[style=leanstyle]
+example (C D S: Prop) (h : C → D → S) : C ∧ D → S := by
+exact λ h1 : C ∧ D, h h1.left h1.right
+    \end{lstlisting}
+
+    \item \textbf{Level 8:}
+    \begin{lstlisting}[style=leanstyle]
+example (C D S : Prop) (h : (S → C) ∧ (S → D)) : S → C ∧ D := by
+exact λ s : S, ⟨h.left s, h.right s⟩
+    \end{lstlisting}
+
+    \item \textbf{Level 9:}
+    \begin{lstlisting}[style=leanstyle]
+example (R S : Prop) : R → (S → R) ∧ (¬S → R) := by
+exact λ r : R, ⟨λ _ , r, λ _ , r⟩
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection*{Reflections and Insights}
+
+We saw how lambda functions can be used to construct implications and how logical statements can be built and proven using basic principles of propositional logic.
+
+The most intersting was the interaction between conjunction (\(\land\)) and implication (\(\rightarrow\)), as seen in levels 6 and 7. These exercises showed how we can convert between statements involving conjunctions and nested implications.
 
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and lean code proofs, and then we began to solve problems recursively. The following week I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parenthesis. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used lean as a way of proving logic puzzles.
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements.
 
 \end{document}
