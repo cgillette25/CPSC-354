@@ -522,7 +522,73 @@ During this week's assignment, I asked the following question on Discord:
 "Which proofs would generally be harder for AI, implication or inductive?"
 \end{quote}
 
+\section{Week 7: Lambda Calculus and Church Numerals}
+\label{sec:week7}
+
+In Week 7, we explored lambda calculus and the representation of natural numbers using Church numerals.
+
+\subsection*{Key Concepts}
+
+\begin{itemize}
+    \item Lambda calculus and term reduction
+    \item Church numerals for natural numbers
+    \item Arithmetic operations using lambda expressions
+\end{itemize}
+
+\subsection*{Lambda Term Reduction}
+
+We reduced the following lambda term:
+
+\[
+((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x)))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+\]
+
+\begin{enumerate}
+    \item \textbf{Initial Expression:}
+    \[
+    ((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x)))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+
+    \item \textbf{First Reduction:} Apply \(\lambda m.\ \lambda n.\ m\ n\) to \(\lambda f.\ \lambda x.\ f(f\ x)\):
+    \[
+    (\lambda n.\ (\lambda f.\ \lambda x.\ f(f\ x))\ n)\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+
+    \item \textbf{Second Reduction:} Apply the resulting function to \(\lambda f.\ \lambda x.\ f(f(f\ x))\):
+    \[
+    (\lambda f.\ \lambda x.\ f(f\ x))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+
+    \item \textbf{Third Reduction:} Expand the abstraction over \(x\):
+    \[
+    \lambda x.\ (\lambda f.\ \lambda x.\ f(f(f\ x)))\ ((\lambda f.\ \lambda x.\ f(f(f\ x)))\ x)
+    \]
+
+    \item \textbf{Fourth Reduction:} Simplify the inner application:
+    \[
+    \lambda x.\ (\lambda x.\ x(x(x\ x)))\ ((\lambda x.\ x(x(x\ x)))\ (x(x(x\ x))))
+    \]
+
+    \item \textbf{Final Reduction:} Simplify to obtain the Church numeral 6:
+    \[
+    \lambda x.\ x(x(x(x(x(x\ x)))))
+    \]
+\end{enumerate}
+
+\subsection*{Function Implemented by \((\lambda m.\ \lambda n.\ m\ n)\)}
+
+The function \((\lambda m.\ \lambda n.\ m\ n)\) implements \textbf{multiplication} on natural numbers using Church numerals. Applying one numeral to another composes their functions, resulting in the product of the two numbers.
+
+\subsection*{Discussion Question}
+
+This weeks discord question is:
+
+\begin{quote}
+\small
+"What challenges do other operations like subtraction and division using lamda calculus and Church numerals present compared to addition and multiplication?"
+\end{quote}
+
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements.
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication.
 
 \end{document}
