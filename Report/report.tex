@@ -35,7 +35,7 @@
     {≡}{{$\equiv$}}1
     {…}{{$\ldots$}}1
     {×}{{$\times$}}1
-    {𝔽}{{$\mathbb{F}$}}1
+    {��}{{$\mathbb{F}$}}1
     {ℕ}{{$\mathbb{N}$}}1,
     breaklines=true,
     postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
@@ -588,7 +588,278 @@ This weeks discord question is:
 "What challenges do other operations like subtraction and division using lamda calculus and Church numerals present compared to addition and multiplication?"
 \end{quote}
 
+\section{Week 8: Implementing a Lambda Calculus Interpreter}
+\label{sec:week8}
+
+In Week 8, we explored the implementation of a simple lambda calculus interpreter and delved into key concepts such as expression reduction, capture-avoiding substitution, and normal forms.
+
+\subsection*{Key Concepts}
+
+\begin{itemize}
+    \item Lambda calculus expression parsing and evaluation
+    \item Left-associativity of function application
+    \item Capture-avoiding substitution in lambda expressions
+    \item Normal forms and non-terminating computations
+\end{itemize}
+
+\subsection*{Adding Lambda Expressions to \texttt{test.lc} and Running the Interpreter}
+
+We added various lambda expressions from lectures on Lambda Calculus and Church Encodings to a file named \texttt{test.lc}. This allowed us to test the interpreter and observe how it evaluates different expressions. Here are some of the expressions we included:
+
+\begin{lstlisting}[language=Haskell]
+-- Identity function applied to a value
+(\x. x) a
+
+-- Boolean True applied to two values
+(\t. \f. t) a b
+
+-- Boolean False applied to two values
+(\t. \f. f) a b
+
+-- Church numeral for one
+(\f. \x. f x)
+
+-- Successor function applied to one
+(\n. \f. \x. f (n f x)) (\f. \x. f x)
+
+-- Addition of one and two
+(\m. \n. \f. \x. m f (n f x)) (\f. \x. f x) (\f. \x. f (f x))
+\end{lstlisting}
+
+We ran the interpreter using the command:
+
+\begin{lstlisting}[language=bash]
+python interpreter.py test.lc
+\end{lstlisting}
+
+The interpreter processed each expression, performing beta reductions and outputting the results. For example, applying the identity function to \texttt{a} resulted in \texttt{a}, and adding Church numerals for one and two yielded the Church numeral for three.
+
+\subsection*{Left-Associativity of Application and Parentheses Reduction}
+
+We explored why the expression \texttt{a b c d} reduces to \texttt{(((a b) c) d)} and why \texttt{(a)} reduces to \texttt{a}. In lambda calculus, function application is \textbf{left-associative}, meaning that multiple applications are grouped from the left. Thus:
+
+\[
+a\ b\ c\ d \quad \equiv \quad (((a\ b)\ c)\ d)
+\]
+
+Parentheses in lambda calculus are used for grouping and do not alter the meaning of the expression. Therefore, \texttt{(a)} simply reduces to \texttt{a}.
+
+\subsection*{Capture-Avoiding Substitution and Interpreter Limitations}
+
+\textbf{Capture-avoiding substitution} is a crucial mechanism in lambda calculus interpreters to ensure that free variables in substituted expressions do not become inadvertently bound, which can alter the intended meaning of expressions.
+
+\subsubsection*{Issues in the Interpreter Implementation}
+
+While our interpreter attempts to implement capture-avoiding substitution, we discovered that it does not handle variable capture correctly in certain cases. Specifically, the interpreter:
+
+\begin{itemize}
+    \item Fails to properly rename bound variables during substitution, leading to variable capture.
+    \item Stops reduction prematurely when it encounters variables that should be further reduced.
+    \item Does not consistently generate fresh variable names to avoid conflicts.
+\end{itemize}
+
+\subsubsection*{Example Demonstrating the Issue}
+
+Consider evaluating the expression:
+
+\[
+((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x)))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+\]
+
+When we run this expression through the interpreter, we observe that it gets stuck and does not fully reduce to the expected normal form. Here's what happens step by step:
+
+\begin{enumerate}
+    \item \textbf{Initial Expression:}
+    \[
+    ((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x)))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+    
+    \item \textbf{First Beta Reduction:} Substitute \(m\) with \(\lambda f.\ \lambda x.\ f(f\ x)\) in \(\lambda n.\ m\ n\):
+    \[
+    \lambda n.\ (\lambda f.\ \lambda x.\ f(f\ x))\ n
+    \]
+    The interpreter should generate a fresh variable to avoid capture but fails to do so properly.
+
+    \item \textbf{Second Beta Reduction:} Apply the function to \(\lambda f.\ \lambda x.\ f(f(f\ x))\):
+    \[
+    (\lambda f.\ \lambda x.\ f(f\ x))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+    The variable \(n\) is replaced with \(\lambda f.\ \lambda x.\ f(f(f\ x))\), but the interpreter does not handle the substitution correctly.
+
+    \item \textbf{Incorrect Variable Capture:} The interpreter incorrectly allows the bound variable \(f\) in \(\lambda f.\ \lambda x.\ f(f\ x)\) to capture the free variable \(f\) from the argument, leading to an incorrect expression.
+
+    \item \textbf{Premature Termination:} Due to the improper handling of variable names, the interpreter stops reducing the expression further, resulting in an incomplete evaluation.
+\end{enumerate}
+
+\subsubsection*{Analysis of the Interpreter's Substitution Function}
+
+The substitution function in the interpreter is intended to perform capture-avoiding substitution by generating fresh variable names. However, it has shortcomings:
+
+\begin{lstlisting}[language=Python]
+def substitute(tree, name, replacement):
+    if tree[0] == 'var':
+        if tree[1] == name:
+            return replacement
+        else:
+            return tree
+    elif tree[0] == 'lam':
+        if tree[1] == name:
+            return tree
+        else:
+            fresh_name = name_generator.generate()
+            return ('lam', fresh_name, substitute(
+                substitute(tree[2], tree[1], ('var', fresh_name)),
+                name, replacement))
+    elif tree[0] == 'app':
+        return ('app', substitute(tree[1], name, replacement),
+                     substitute(tree[2], name, replacement))
+    else:
+        raise Exception('Unknown tree', tree)
+\end{lstlisting}
+
+\textbf{Issues Identified:}
+
+\begin{itemize}
+    \item The function generates fresh variable names but does not consistently apply them throughout the expression.
+    \item When substituting within a lambda abstraction, it may not correctly replace all instances of the bound variable, leading to variable capture.
+    \item The interpreter may leave unevaluated variables in the expression, causing it to stop reducing prematurely.
+\end{itemize}
+
+\subsubsection*{Specific Problem in Our Interpreter}
+
+In our interpreter, when evaluating the expression \(\left((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x))\right)\ (\lambda f.\ \lambda x.\ f(f(f\ x)))\), the substitution function fails to avoid capturing the free variable \(f\) during the substitution of \(n\). This happens because:
+
+\begin{itemize}
+    \item The bound variable \(f\) in the inner lambda abstractions conflicts with the free variable \(f\) in the replacement expression.
+    \item The interpreter does not generate a fresh variable name for \(f\), leading to incorrect binding.
+    \item As a result, the variable \(f\) gets incorrectly bound, and the expression cannot be reduced further.
+\end{itemize}
+
+\subsubsection*{Consequences of the Interpreter's Limitations}
+
+Due to the incorrect implementation of capture-avoiding substitution:
+
+\begin{itemize}
+    \item The interpreter fails to evaluate certain expressions that require careful handling of variable scopes.
+    \item Expressions that should reduce to normal form remain partially evaluated.
+    \item The interpreter does not accurately reflect the semantics of lambda calculus, limiting its usefulness for complex expressions.
+\end{itemize}
+
+
+\subsection*{Reflections and Insights}
+
+This exercise highlighted the importance of correctly implementing capture-avoiding substitution in lambda calculus interpreters. Mismanagement of variable scopes can lead to incorrect evaluations and hinder the reduction of expressions to normal form.
+
+This weeks discord question is:
+
+\begin{quote}
+\small
+"What are the implications of untyped vs. typed lambda calculus on interpreter design?"
+\end{quote}
+
+\section{Week 9: Evaluating Expressions and Tracing the Interpreter}
+\label{sec:week9}
+
+In Week 9, we focused on evaluating specific lambda expressions using the interpreter and tracing its evaluation strategy, particularly the recursive calls to \texttt{evaluate()} and \texttt{substitute()} functions.
+
+
+\subsection*{Evaluating \(\left((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x))\right)\ (\lambda f.\ \lambda x.\ f(f(f\ x)))\)}
+
+We evaluated the expression:
+
+\[
+\left((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x))\right)\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+\]
+
+Following the interpreter's steps precisely, we performed each substitution line by line.
+
+\subsubsection*{Step-by-Step Evaluation}
+
+\begin{enumerate}
+    \item \textbf{Initial Expression:}
+    \[
+    ((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x)))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+
+    \item \textbf{First Application:} Apply \(\lambda m.\ \lambda n.\ m\ n\) to \(\lambda f.\ \lambda x.\ f(f\ x)\).
+    \[
+    (\lambda n.\ (\lambda f.\ \lambda x.\ f(f\ x))\ n)
+    \]
+    The variable \(m\) is replaced with \(\lambda f.\ \lambda x.\ f(f\ x)\).
+
+    \item \textbf{Second Application:} Apply the result to \(\lambda f.\ \lambda x.\ f(f(f\ x))\).
+    \[
+    (\lambda f.\ \lambda x.\ f(f\ x))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))
+    \]
+    The variable \(n\) is replaced with \(\lambda f.\ \lambda x.\ f(f(f\ x))\).
+
+    \item \textbf{Third Application:} Apply \(\lambda f.\ \lambda x.\ f(f\ x)\) to \(\lambda f.\ \lambda x.\ f(f(f\ x)))\).
+    \[
+    \lambda x.\ (\lambda f.\ \lambda x.\ f(f(f\ x)))\ (\lambda f.\ \lambda x.\ f(f(f\ x)))\ x
+    \]
+
+\end{enumerate}
+
+\subsection*{Tracing Recursive Calls in the Interpreter}
+
+To understand the evaluation strategy, we traced the recursive calls to \texttt{evaluate()} and \texttt{substitute()} functions using the expression:
+
+\[
+((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x)))\ (\lambda f.\ \lambda x.\ f\ x)
+\]
+
+\subsubsection*{Trace of Recursive Calls}
+
+We recorded the calls to \texttt{evaluate()} and \texttt{substitute()}, including line numbers from the interpreter code.
+
+\begin{enumerate}
+    \item \textbf{Top-Level Evaluation:} \texttt{evaluate()} is called with the entire expression.
+
+    \item \textbf{Evaluating the Left Application:} \texttt{evaluate()} is called on the left part \((\lambda m.\ \lambda n.\ m\ n)\ (\lambda f.\ \lambda x.\ f(f\ x))\).
+
+    \item \textbf{Beta Reduction:} Since the left part is a lambda abstraction, we perform beta reduction by calling \texttt{substitute()} to replace \(m\) with \(\lambda f.\ \lambda x.\ f(f\ x)\).
+
+    \item \textbf{Capture-Avoiding Substitution:} \texttt{substitute()} generates fresh variable names (e.g., \texttt{Var1}) to avoid variable capture during substitution.
+
+    \item \textbf{Evaluating the Resulting Expression:} \texttt{evaluate()} is called on the substituted expression \(\lambda n.\ (\lambda f.\ \lambda x.\ f(f\ x))\ n\).
+
+    \item \textbf{Second Beta Reduction:} We perform beta reduction again by substituting \(n\) with \(\lambda f.\ \lambda x.\ f\ x\), generating fresh variables as needed.
+
+    \item \textbf{Recursive Calls:} The interpreter continues making recursive calls to \texttt{evaluate()} and \texttt{substitute()}, building up the final expression.
+
+    \item \textbf{Final Result:} \(\lambda \text{Var5}.\ (\lambda f.\ (\lambda x.\ f\ x))\ ((\lambda f.\ (\lambda x.\ f\ x))\ \text{Var5})\)
+
+
+\end{enumerate}
+
+\subsubsection*{Interpreting the Trace}
+
+The trace shows how the interpreter:
+
+\begin{itemize}
+    \item Uses fresh variable names to prevent variable capture.
+    \item Recursively evaluates sub-expressions.
+    \item Stops prematurely after giving new variables, doesn't continue with the reduction
+\end{itemize}
+
+
+\subsection*{Reflections and Insights}
+
+This week's exercises deepened our understanding of how lambda calculus expressions are evaluated in practice. 
+
+\subsection*{Discussion Question}
+
+For this week's discussion, we considered:
+
+\begin{quote}
+\small
+"What are the implications of evaluation strategies (e.g., normal order vs. applicative order) on the termination and performance of lambda calculus interpreters?"
+\end{quote}
+
+---
+
+
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication.
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger.
 
 \end{document}
