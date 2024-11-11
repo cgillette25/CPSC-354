@@ -9,6 +9,8 @@
 \usepackage{hyperref}         % For clickable links in the Table of Contents
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
 
 % Lean Style Definition for Listings
 \lstdefinestyle{leanstyle}{
@@ -858,7 +860,7 @@ For this week's discussion, we considered:
 
 ---
 \section{Week 10: Introduction to Abstract Reduction Systems (ARS)}
-\label{sec:week8}
+\label{sec:week10}
 
 In week 10, we began to learn about Abstract Reduction Systems. We did this by looking at how basic mathematic equations are reduced to identify equalities and then looked at doing this via code.
 
@@ -892,9 +894,136 @@ For this week's discord:
 "In software development, how could non-confluent behaviors manifest in a system, and are there cases where non-confluence might be beneficial?"
 \end{quote}
 
+\section{Week 11: Introduction to Rewriting}
+\label{sec:week11}
 
+In week 11, we took a look at ARS's to understnad their behavior as terminating, confluent, and whether or not that had unique normal forms.  
 
+\subsection*{ARS examples}
+
+1. Confluent, Terminating, Has Unique Normal Forms (True, True, True)
+\begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [below left=of a] {b};
+    \node (c) [below right=of a] {c};
+    \node (d) [below=of b] {Normal Form};
+    \draw[->] (a) -- (b);
+    \draw[->] (a) -- (c);
+    \draw[->] (b) -- (d);
+    \draw[->] (c) -- (d);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    2. Confluent, Terminating, No Unique Normal Forms (True, True, False)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [below left=of a] {b};
+    \node (c) [below right=of a] {c};
+    \node (d1) [below left=of b] {Normal Form 1};
+    \node (d2) [below right=of c] {Normal Form 2};
+    \draw[->] (a) -- (b);
+    \draw[->] (a) -- (c);
+    \draw[->] (b) -- (d1);
+    \draw[->] (c) -- (d2);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    3. Confluent, Not Terminating, Has Unique Normal Forms (True, False, True)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [right=of a] {b};
+    \node (c) [below right=of b] {c};
+    \node (d) [below left=of c] {a};
+    \draw[->] (a) -- (b);
+    \draw[->] (b) -- (c);
+    \draw[->] (c) -- (d);
+    \draw[->] (d) -- (a);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    4. Confluent, Not Terminating, No Unique Normal Forms (True, False, False)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [below left=of a] {b};
+    \node (c) [below right=of a] {c};
+    \draw[->] (a) -- (b);
+    \draw[->] (b) -- (a);
+    \draw[->] (a) -- (c);
+    \draw[->] (c) -- (a);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    5. Not Confluent, Terminating, Has Unique Normal Forms (False, True, True)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [below=of a] {b};
+    \node (c) [right=of b] {c};
+    \node (d) [below=of b] {Normal Form 1};
+    \node (e) [below=of c] {Normal Form 2};
+    \draw[->] (a) -- (b);
+    \draw[->] (a) -- (c);
+    \draw[->] (b) -- (d);
+    \draw[->] (c) -- (e);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    6. Not Confluent, Terminating, No Unique Normal Forms (False, True, False)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [below left=of a] {b};
+    \node (c) [below right=of a] {c};
+    \node (d1) [below left=of b] {Normal Form 1};
+    \node (d2) [below right=of c] {Normal Form 2};
+    \draw[->] (a) -- (b);
+    \draw[->] (a) -- (c);
+    \draw[->] (b) -- (d1);
+    \draw[->] (c) -- (d2);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    7. Not Confluent, Not Terminating, Has Unique Normal Forms (False, False, True)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [right=of a] {b};
+    \node (c) [below right=of b] {c};
+    \node (d) [below left=of c] {a};
+    \draw[->] (a) -- (b);
+    \draw[->] (b) -- (c);
+    \draw[->] (c) -- (d);
+    \draw[->] (d) -- (a);
+    \end{tikzpicture}
+    
+    \vspace{1cm}
+    
+    8. Not Confluent, Not Terminating, No Unique Normal Forms (False, False, False)
+    \begin{tikzpicture}
+    \node (a) {a};
+    \node (b) [below left=of a] {b};
+    \node (c) [below right=of a] {c};
+    \node (d) [below=of b] {d};
+    \node (e) [below=of c] {e};
+    \draw[->] (a) -- (b);
+    \draw[->] (a) -- (c);
+    \draw[->] (b) -- (d);
+    \draw[->] (c) -- (e);
+    \draw[->] (d) -- (c);
+    \draw[->] (e) -- (b);
+    \end{tikzpicture}
+
+This weeks discord question is:
+
+\begin{quote}
+\small
+ "In what ways might ARSs contribute to advancements in artificial intelligence, particularly in areas like automated reasoning or machine learning?"
+\end{quote}
+    
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. 
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. Week 11 we continued to look at ARS's and how to draw and describe them in order to understand how they work. 
 
 \end{document}
