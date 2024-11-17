@@ -1022,8 +1022,181 @@ This weeks discord question is:
 \small
  "In what ways might ARSs contribute to advancements in artificial intelligence, particularly in areas like automated reasoning or machine learning?"
 \end{quote}
+
+\section{Week 12: Understanding Fixed Points and Recursion in Lambda Calculus}
+\label{sec:week12}
+
+In week 12, we explored how recursion can be represented in the lambda calculus using the fixed-point combinator. 
+
+\subsection*{Step-by-Step Evaluation of \texttt{fact 3}}
+
+We start with the definition of the factorial function using a recursive \texttt{let rec} construct:
+
+\begin{equation*}
+\begin{split}
+& \text{let rec } \text{fact} = \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1)\ \text{in }\text{fact}\ 3
+\end{split}
+\end{equation*}
+
+We will evaluate \texttt{fact 3} step by step, applying the given computation rules:
+
+\begin{enumerate}
+    \item \textbf{Apply definition of \texttt{let rec}:}
+    \begin{equation*}
+    \text{let } \text{fact} = (\text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1)))\ \text{in }\text{fact}\ 3
+    \end{equation*}
+    \item \textbf{Apply definition of \texttt{let}:}
+    \begin{equation*}
+    (\lambda \text{fact}.\ \text{fact}\ 3)\ \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1)) \right)
+    \end{equation*}
+    \item \textbf{Beta reduction (substitute \texttt{fix F}):}
+    \begin{equation*}
+    \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1)) \right)\ 3
+    \end{equation*}
+    \item \textbf{Apply definition of \texttt{fix}:}
+    \begin{equation*}
+    \left( (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1))\ \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right) \right)\ 3
+    \end{equation*}
+    \item \textbf{Beta reduction (substitute \texttt{fix F}):}
+    \begin{equation*}
+    \left( \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(n - 1) \right)\ 3
+    \end{equation*}
+    \item \textbf{Beta reduction (substitute \texttt{3}):}
+    \begin{equation*}
+    \text{if } 3 = 0\ \text{then } 1\ \text{else } 3 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(3 - 1)
+    \end{equation*}
+    \item \textbf{Simplify \texttt{3 - 1}:}
+    \begin{equation*}
+    \text{if } 3 = 0\ \text{then } 1\ \text{else } 3 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(2)
+    \end{equation*}
+    \item \textbf{Compute \texttt{3 = 0}:} (Using the computation rule that \texttt{n = 0} is \texttt{False} when \texttt{n} is not zero.)
+    \begin{equation*}
+    \text{if False then } 1\ \text{else } 3 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(2)
+    \end{equation*}
+    \item \textbf{Apply definition of \texttt{if}:}
+    \begin{equation*}
+    3 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(2)
+    \end{equation*}
+    \item \textbf{Compute \texttt{(fix F) 2}:}
+    \begin{enumerate}
+        \item \textbf{Apply definition of \texttt{fix}:}
+        \begin{equation*}
+        \left( (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1))\ \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right) \right)(2)
+        \end{equation*}
+        \item \textbf{Beta reduction (substitute \texttt{fix F}):}
+        \begin{equation*}
+        \left( \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(n - 1) \right)(2)
+        \end{equation*}
+        \item \textbf{Beta reduction (substitute \texttt{2}):}
+        \begin{equation*}
+        \text{if } 2 = 0\ \text{then } 1\ \text{else } 2 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(2 - 1)
+        \end{equation*}
+        \item \textbf{Simplify \texttt{2 - 1}:}
+        \begin{equation*}
+        \text{if } 2 = 0\ \text{then } 1\ \text{else } 2 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(1)
+        \end{equation*}
+        \item \textbf{Compute \texttt{2 = 0}:}
+        \begin{equation*}
+        \text{if False then } 1\ \text{else } 2 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(1)
+        \end{equation*}
+        \item \textbf{Apply definition of \texttt{if}:}
+        \begin{equation*}
+        2 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(1)
+        \end{equation*}
+    \end{enumerate}
+    \item \textbf{Compute \texttt{(fix F) 1}:}
+    \begin{enumerate}
+        \item \textbf{Apply definition of \texttt{fix}:}
+        \begin{equation*}
+        \left( (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1))\ \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right) \right)(1)
+        \end{equation*}
+        \item \textbf{Beta reduction (substitute \texttt{fix F}):}
+        \begin{equation*}
+        \left( \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(n - 1) \right)(1)
+        \end{equation*}
+        \item \textbf{Beta reduction (substitute \texttt{1}):}
+        \begin{equation*}
+        \text{if } 1 = 0\ \text{then } 1\ \text{else } 1 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(1 - 1)
+        \end{equation*}
+        \item \textbf{Simplify \texttt{1 - 1}:}
+        \begin{equation*}
+        \text{if } 1 = 0\ \text{then } 1\ \text{else } 1 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(0)
+        \end{equation*}
+        \item \textbf{Compute \texttt{1 = 0}:}
+        \begin{equation*}
+        \text{if False then } 1\ \text{else } 1 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(0)
+        \end{equation*}
+        \item \textbf{Apply definition of \texttt{if}:}
+        \begin{equation*}
+        1 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(0)
+        \end{equation*}
+    \end{enumerate}
+    \item \textbf{Compute \texttt{(fix F) 0}:}
+    \begin{enumerate}
+        \item \textbf{Apply definition of \texttt{fix}:}
+        \begin{equation*}
+        \left( (\lambda \text{fact}.\ \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1))\ \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right) \right)(0)
+        \end{equation*}
+        \item \textbf{Beta reduction (substitute \texttt{fix F}):}
+        \begin{equation*}
+        \left( \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(n - 1) \right)(0)
+        \end{equation*}
+        \item \textbf{Beta reduction (substitute \texttt{0}):}
+        \begin{equation*}
+        \text{if } 0 = 0\ \text{then } 1\ \text{else } 0 \times \left( \text{fix}\ (\lambda \text{fact}.\ \lambda n.\ \ldots) \right)(0 - 1)
+        \end{equation*}
+        \item \textbf{Compute \texttt{0 = 0}:}
+        \begin{equation*}
+        \text{if True then } 1\ \text{else }\ldots
+        \end{equation*}
+        \item \textbf{Apply definition of \texttt{if}:}
+        \begin{equation*}
+        1
+        \end{equation*}
+    \end{enumerate}
+    \item \textbf{Back to computation in step 12f:}
+    \begin{equation*}
+    1 \times 1 = 1
+    \end{equation*}
+    \item \textbf{Back to computation in step 10f:}
+    \begin{equation*}
+    2 \times 1 = 2
+    \end{equation*}
+    \item \textbf{Final computation:}
+    \begin{equation*}
+    3 \times 2 = 6
+    \end{equation*}
+\end{enumerate}
+
+Thus, we have shown step by step that:
+
+\begin{equation*}
+\text{let rec }\text{fact} = \lambda n.\ \text{if } n = 0\ \text{then } 1\ \text{else } n \times \text{fact}(n - 1)\ \text{in }\text{fact}\ 3\quad \to\quad 6
+\end{equation*}
+
+\subsection*{Computation Rules Used}
+
+For reference, the computation rules applied at each step are:
+
+\begin{itemize}
+    \item \textbf{Definition of \texttt{fix}:} $\text{fix}\ F\quad \to\quad F\ (\text{fix}\ F)$
+    \item \textbf{Definition of \texttt{let}:} $\text{let } x = e_1\ \text{in } e_2\quad \to\quad (\lambda x.\ e_2)\ e_1$
+    \item \textbf{Definition of \texttt{let rec}:} $\text{let rec } f = e_1\ \text{in } e_2\quad \to\quad \text{let } f = (\text{fix}\ (\lambda f.\ e_1))\ \text{in } e_2$
+    \item \textbf{Beta reduction:} $(\lambda x.\ e)\ e'\quad \to\quad e\ [x := e']$
+    \item \textbf{Simplification of arithmetic expressions}, e.g., $n - 1$
+    \item \textbf{Evaluation of equality:} $0 = 0\quad \to\quad \text{True}$; $n = 0$ where $n \neq 0\quad \to\quad \text{False}$
+    \item \textbf{Definition of \texttt{if}:} $\text{if True then } A\ \text{else } B\quad \to\quad A$; $\text{if False then } A\ \text{else } B\quad \to\quad B$
+\end{itemize}
+
+This week's discord question is:
+
+\begin{quote}
+\small
+"In what ways could fixed-point combinators challenge or influence the development of AI systems that require repetitive decision-making?"
+\end{quote}
+
     
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. Week 11 we continued to look at ARS's and how to draw and describe them in order to understand how they work. 
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. Week 11 we continued to look at ARS's and how to draw and describe them in order to understand how they work. Week 12 focused on modeling recursion in lambda calculus with fixed-point combinators.
 
 \end{document}
