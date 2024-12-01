@@ -1195,8 +1195,328 @@ This week's discord question is:
 "In what ways could fixed-point combinators challenge or influence the development of AI systems that require repetitive decision-making?"
 \end{quote}
 
-    
+\section{Week 13: Analyzing Abstract Reduction Systems through String Rewriting}
+\label{sec:week13}
+
+In week 13, we delved into the study of Abstract Reduction Systems (ARS) using string rewriting rules. We focused on understanding how rewriting rules can define computations and equivalence relations among strings. 
+
+\subsection*{Exercise 5: Understanding Non-Termination and Equivalence Classes}
+
+We are given the following set of rewrite rules over the alphabet $\{a, b\}$:
+
+\begin{enumerate}
+    \item $ab \to ba$
+    \item $ba \to ab$
+    \item $aa \to$ (reduces to the empty string)
+    \item $b \to$ (reduces to the empty string)
+\end{enumerate}
+
+Our task is to analyze this ARS by reducing example strings, determining whether the system terminates, identifying the number of equivalence classes, and describing them.
+
+\subsubsection*{Reducing Example Strings}
+
+\paragraph{Example 1: Reducing \texttt{abba}}
+
+Let's apply the rewrite rules step by step to the string \texttt{abba}.
+
+\begin{enumerate}
+    \item Start with \texttt{abba}.
+    \item Apply $b \to$ to the second character:
+    \begin{equation*}
+        \texttt{a}\underline{\texttt{b}}\texttt{ba} \to \texttt{aba}
+    \end{equation*}
+    \item Apply $b \to$ to the second character again:
+    \begin{equation*}
+        \texttt{a}\underline{\texttt{b}}\texttt{a} \to \texttt{aa}
+    \end{equation*}
+    \item Apply $aa \to$ to eliminate the pair of \texttt{a}'s:
+    \begin{equation*}
+        \underline{\texttt{aa}} \to \varepsilon \ (\text{empty string})
+    \end{equation*}
+\end{enumerate}
+
+Thus, \texttt{abba} reduces to the empty string $\varepsilon$.
+
+\paragraph{Example 2: Reducing \texttt{bababa}}
+
+Let's reduce the string \texttt{bababa}.
+
+\begin{enumerate}
+    \item Start with \texttt{bababa}.
+    \item Apply $b \to$ to all occurrences of \texttt{b}:
+    \begin{equation*}
+        \underline{\texttt{b}}\texttt{a}\underline{\texttt{b}}\texttt{a}\underline{\texttt{b}}\texttt{a} \to \texttt{aaaa}
+    \end{equation*}
+    \item Apply $aa \to$ repeatedly:
+    \begin{align*}
+        \underline{\texttt{aa}}\texttt{aa} &\to \texttt{aa} \\
+        \underline{\texttt{aa}} &\to \varepsilon
+    \end{align*}
+\end{enumerate}
+
+Thus, \texttt{bababa} also reduces to the empty string $\varepsilon$.
+
+\subsubsection*{Non-Termination of the ARS}
+
+The ARS is \textbf{not terminating} due to the presence of the cyclic rewrite rules:
+
+\begin{equation*}
+    ab \leftrightarrow ba
+\end{equation*}
+
+These two rules allow for infinite swapping between \texttt{ab} and \texttt{ba} within any string. For example, consider the string \texttt{ab}:
+
+\begin{equation*}
+    \texttt{ab} \to \texttt{ba} \to \texttt{ab} \to \texttt{ba} \to \ldots
+\end{equation*}
+
+This infinite loop means that there are reduction sequences of infinite length, preventing the ARS from being terminating.
+
+\subsubsection*{Equivalence Classes and Normal Forms}
+
+Despite non-termination, we can analyze the equivalence classes under the relation $\leftrightarrow^*$, the reflexive-transitive-symmetric closure of the rewrite relation.
+
+\paragraph{Number of Equivalence Classes}
+
+There are \textbf{two equivalence classes} in this ARS, determined by the \textbf{parity of the number of \texttt{a}'s} in the string:
+
+\begin{enumerate}
+    \item Strings with an \textbf{even} number of \texttt{a}'s.
+    \item Strings with an \textbf{odd} number of \texttt{a}'s.
+\end{enumerate}
+
+\paragraph{Description of Equivalence Classes}
+
+The rules $aa \to$ and $b \to$ simplify the strings by:
+
+\begin{itemize}
+    \item Eliminating pairs of \texttt{a}'s via $aa \to$.
+    \item Removing all \texttt{b}'s via $b \to$.
+\end{itemize}
+
+This means that any string reduces (modulo infinite swapping of \texttt{ab} and \texttt{ba}) to either:
+
+\begin{itemize}
+    \item The empty string $\varepsilon$, if it contains an even number of \texttt{a}'s.
+    \item A single \texttt{a}, if it contains an odd number of \texttt{a}'s.
+\end{itemize}
+
+\paragraph{Normal Forms}
+
+The \textbf{normal forms} in this ARS are:
+
+\begin{itemize}
+    \item The empty string $\varepsilon$.
+    \item The string \texttt{a}.
+\end{itemize}
+
+However, due to non-termination, not all reduction sequences reach a normal form, but every string is \textbf{equivalent} to one of these two normal forms.
+
+\subsubsection*{Modifying the ARS for Termination}
+
+To make the ARS terminating without changing its equivalence classes, we can remove one of the cyclic rewrite rules. For instance, we can eliminate $ba \to ab$:
+
+\begin{enumerate}
+    \item $ab \to ba$
+    \item $aa \to$
+    \item $b \to$
+\end{enumerate}
+
+By doing this, we break the infinite loop caused by swapping and ensure that every reduction sequence terminates.
+
+Alternatively, we can remove both swapping rules:
+
+\begin{enumerate}
+    \item $aa \to$
+    \item $b \to$
+\end{enumerate}
+
+This simplified ARS is terminating and still preserves the equivalence classes since the swapping of \texttt{a} and \texttt{b} does not affect the parity of \texttt{a}'s.
+
+\subsubsection*{Interpreting the ARS: Specification}
+
+The ARS effectively computes the \textbf{parity of the number of \texttt{a}'s} in a string:
+
+\begin{itemize}
+    \item If the number of \texttt{a}'s is even, the string reduces to $\varepsilon$.
+    \item If the number of \texttt{a}'s is odd, the string reduces to \texttt{a}.
+\end{itemize}
+
+\paragraph{Invariant}
+
+An invariant that characterizes the equivalence classes is:
+
+\begin{equation*}
+    \text{The parity of the count of \texttt{a}'s modulo 2 is preserved under }\leftrightarrow^*
+\end{equation*}
+
+\subsubsection*{Discussion Questions}
+
+\begin{itemize}
+    \item \textbf{How can we determine whether a string contains an even or odd number of \texttt{a}'s using the ARS?}
+    \item \textbf{Does the order of characters affect the parity of \texttt{a}'s in the string?}
+\end{itemize}
+
+These questions highlight the ARS's role in computing a specific property of strings (parity of \texttt{a}'s) independent of the arrangement of characters.
+
+\subsection*{Exercise 5b: Consolidating \texttt{a}'s and Analyzing Equivalence Classes}
+
+In Exercise 5b, we modify one of the rewrite rules:
+
+\begin{enumerate}
+    \item $ab \to ba$
+    \item $ba \to ab$
+    \item $aa \to a$ (instead of $aa \to$)
+    \item $b \to$
+\end{enumerate}
+
+\subsubsection*{Reducing Example Strings}
+
+\paragraph{Example 1: Reducing \texttt{abba}}
+
+\begin{enumerate}
+    \item Start with \texttt{abba}.
+    \item Apply $b \to$ to the second character:
+    \begin{equation*}
+        \texttt{a}\underline{\texttt{b}}\texttt{ba} \to \texttt{aba}
+    \end{equation*}
+    \item Apply $b \to$ to the second character:
+    \begin{equation*}
+        \texttt{a}\underline{\texttt{b}}\texttt{a} \to \texttt{aa}
+    \end{equation*}
+    \item Apply $aa \to a$:
+    \begin{equation*}
+        \underline{\texttt{aa}} \to \texttt{a}
+    \end{equation*}
+\end{enumerate}
+
+Thus, \texttt{abba} reduces to \texttt{a}.
+
+\paragraph{Example 2: Reducing \texttt{bababa}}
+
+\begin{enumerate}
+    \item Start with \texttt{bababa}.
+    \item Apply $b \to$ to all \texttt{b}'s:
+    \begin{equation*}
+        \underline{\texttt{b}}\texttt{a}\underline{\texttt{b}}\texttt{a}\underline{\texttt{b}}\texttt{a} \to \texttt{aaaa}
+    \end{equation*}
+    \item Apply $aa \to a$ repeatedly:
+    \begin{align*}
+        \underline{\texttt{aa}}\texttt{aa} &\to \texttt{a}\texttt{aa} \\
+        \texttt{a}\underline{\texttt{aa}} &\to \texttt{a}\texttt{a} \\
+        \underline{\texttt{aa}} &\to \texttt{a}
+    \end{align*}
+\end{enumerate}
+
+Thus, \texttt{bababa} reduces to \texttt{a}.
+
+\subsubsection*{Non-Termination of the ARS}
+
+Similar to Exercise 5, the ARS is \textbf{not terminating} due to the cyclic rules $ab \leftrightarrow ba$. The possibility of infinite swapping between \texttt{ab} and \texttt{ba} leads to non-terminating reduction sequences.
+
+\subsubsection*{Equivalence Classes and Normal Forms}
+
+\paragraph{Number of Equivalence Classes}
+
+In this modified ARS, there are \textbf{two equivalence classes} based on the \textbf{presence or absence of \texttt{a}} in the string:
+
+\begin{enumerate}
+    \item Strings that contain at least one \texttt{a}.
+    \item Strings that contain no \texttt{a}'s (only \texttt{b}'s).
+\end{enumerate}
+
+\paragraph{Description of Equivalence Classes}
+
+The rules simplify strings by:
+
+\begin{itemize}
+    \item Consolidating pairs of \texttt{a}'s into a single \texttt{a} via $aa \to a$.
+    \item Removing all \texttt{b}'s via $b \to$.
+\end{itemize}
+
+Therefore, any string reduces (modulo infinite swapping) to either:
+
+\begin{itemize}
+    \item The string \texttt{a}, if it contains at least one \texttt{a}.
+    \item The empty string $\varepsilon$, if it contains only \texttt{b}'s.
+\end{itemize}
+
+\paragraph{Normal Forms}
+
+The \textbf{normal forms} in this ARS are:
+
+\begin{itemize}
+    \item The string \texttt{a}.
+    \item The empty string $\varepsilon$.
+\end{itemize}
+
+\subsubsection*{Modifying the ARS for Termination}
+
+To ensure termination without altering the equivalence classes, we can remove one of the swapping rules. For example, eliminate $ba \to ab$:
+
+\begin{enumerate}
+    \item $ab \to ba$
+    \item $aa \to a$
+    \item $b \to$
+\end{enumerate}
+
+This modification prevents infinite swapping, ensuring that every reduction sequence terminates.
+
+Alternatively, we can remove both swapping rules:
+
+\begin{enumerate}
+    \item $aa \to a$
+    \item $b \to$
+\end{enumerate}
+
+Since the swapping rules do not affect the presence of \texttt{a}'s, the equivalence classes remain the same.
+
+\subsubsection*{Interpreting the ARS: Specification}
+
+The ARS effectively determines whether a string contains \textbf{at least one \texttt{a}}:
+
+\begin{itemize}
+    \item If the string contains at least one \texttt{a}, it reduces to \texttt{a}.
+    \item If the string contains only \texttt{b}'s, it reduces to $\varepsilon$.
+\end{itemize}
+
+\paragraph{Invariant}
+
+An invariant characterizing the equivalence classes is:
+
+\begin{equation*}
+    \text{The presence of \texttt{a} in the string is preserved under }\leftrightarrow^*
+\end{equation*}
+
+\subsubsection*{Discussion Questions}
+
+\begin{itemize}
+    \item \textbf{How can we use the ARS to check if a string contains any \texttt{a}'s?}
+    \item \textbf{Does reducing the string help in pattern matching for the presence of certain characters?}
+\end{itemize}
+
+These questions emphasize how the ARS can be used to compute properties of strings related to the presence or absence of specific characters.
+
+\subsection*{Summary of Computation Rules Used}
+
+Throughout both exercises, we applied the following computation principles:
+
+\begin{itemize}
+    \item \textbf{Rewrite Rules Application:} Applying rewrite rules to substrings within a larger string.
+    \item \textbf{Termination Analysis:} Identifying cycles caused by conflicting rewrite rules.
+    \item \textbf{Equivalence Classes Determination:} Grouping strings based on invariants preserved under rewriting.
+    \item \textbf{Invariant Identification:} Recognizing properties (like parity or presence of a character) that remain unchanged.
+\end{itemize}
+
+\subsection*{This Week's Discussion Question}
+
+\begin{quote}
+\small
+\textbf{How might the concept of equivalence classes improve error detection in communication systems?}
+\end{quote}
+
+This question invites us to consider the practical applications of ARS analysis in algorithm optimization and the development of efficient computational methods.   
 \section*{Conclusion}
-In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. Week 11 we continued to look at ARS's and how to draw and describe them in order to understand how they work. Week 12 focused on modeling recursion in lambda calculus with fixed-point combinators.
+In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. Week 11 we continued to look at ARS's and how to draw and describe them in order to understand how they work. Week 12 focused on modeling recursion in lambda calculus with fixed-point combinators. In week 13, we delved into the study of Abstract Reduction Systems (ARS) using string rewriting rules.
 
 \end{document}
