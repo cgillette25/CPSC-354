@@ -53,6 +53,10 @@
 \begin{document}
 
 \maketitle
+\begin{abstract}
+    This report details my semester in the CPSC-354 course, exploring mathematical foundations through Lean, recursive problem-solving, parsing techniques, lambda calculus, and Abstract Reduction Systems (ARS). Starting with a review of discrete math and proofs, I developed proficiency in expressing mathematical concepts programmatically. Weekly assignments and discussions bridged theoretical knowledge and coding practices. Each week built upon the last, culminating in a comprehensive understanding of logical proofs, syntax parsing, and reduction systems, with key insights from individual assignments and group collaborations. This abstract encapsulates the learning milestones and the structured approach taken throughout the semester.
+\end{abstract}
+
 \tableofcontents
 \newpage
 
@@ -829,7 +833,7 @@ We recorded the calls to \texttt{evaluate()} and \texttt{substitute()}, includin
 
     \item \textbf{Recursive Calls:} The interpreter continues making recursive calls to \texttt{evaluate()} and \texttt{substitute()}, building up the final expression.
 
-    \item \textbf{Final Result:} \(\lambda \text{Var5}.\ (\lambda f.\ (\lambda x.\ f\ x))\ ((\lambda f.\ (\lambda x.\ f\ x))\ \text{Var5})\)
+    \item \textbf{Final Result:} \(\text{Var5}.((\lambda f.(\lambda x.(f\ x)))\ ((\lambda f.(\lambda x.(f\ x)))\ \text{Var5}))\)
 
 
 \end{enumerate}
@@ -1515,8 +1519,72 @@ Throughout both exercises, we applied the following computation principles:
 \textbf{How might the concept of equivalence classes improve error detection in communication systems?}
 \end{quote}
 
+\section{Group Projects}
+\label{sec:group_projects}
+
+\subsection*{Introduction}
+In this section, I talk about my contribtuions to the group projects throughout the last project, focusing on the technical and theoretical challenges we tackled as a team. My work primarily involved implementing key features in our functional programming language, including extending a lambda calculus interpreter, integrating conditionals, recursion, and lists, and ensuring compliance with lazy evaluation semantics.
+
+\subsection{Milestone 1: Lambda Calculus and Arithmetic}
+In Milestone 1, my primary contribution was resolving the ambiguities in our context-free grammar (CFG) to define precedence and associativity rules for arithmetic operations. For instance, we established that multiplication (\(*\)) should bind tighter than addition (\(+\)), while negation (\(-\)) took the highest precedence. This required experimentation with parsing conflicts in our grammar. 
+
+A specific challenge I addressed was ensuring that nested expressions like \((\lambda x.x * x) (-2) * (-3)\) evaluated correctly. By enforcing left-to-right associativity for arithmetic operations and recursively testing with increasingly complex expressions, I was able to validate our interpreter's lazy evaluation strategy. 
+
+\subsection{Milestone 2: Conditionals and Fixed-Point Combinators}
+For Milestone 2, I implemented conditionals, let expressions, and recursion. A highlight was integrating the fixed-point combinator to support recursive functions. For example, implementing the semantics for `letrec` involved transforming it into a \(\text{fix}\) operation:
+\[
+\text{letrec f = e1 in e2} \rightarrow \text{let f = (fix } (\lambda f.e1)\text{) in e2}.
+\]
+This implementation allowed recursive definitions such as a factorial function:
+\[
+\text{letrec f = } \lambda n. \text{if } n == 0 \text{ then } 1 \text{ else } n * f(n-1) \text{ in } f(4).
+\]
+Debugging these constructs helped solidify my understanding of fixed-point combinators and their practical application in programming languages. 
+
+\subsection{Milestone 3: Lists and Sequencing}
+In Milestone 3, my contribution focused on helping implement list constructors (`\#`, `:`) and destructors (`\text{hd}`, `\text{tl}`) while ensuring proper interaction with sequencing operations (`;;`). 
+
+I helped with debugging cases such as:
+\[
+\text{let } f = \lambda x. x + 1 \text{ in } (f\ 1) : (f\ 2) : (f\ 3) : \#.
+\]
+Ensuring this evaluated to:
+\[
+(2.0 : (3.0 : (4.0 : \#))).
+\]
+We also encountered edge cases where sequencing nested with lists caused incorrect evaluations. For example:
+\[
+1 + 2 ;; (1 : 2 : \#).
+\]
+Resolving this required explicitly restricting `;;` to top-level expressions in the grammar. This experience emphasized how theoretical parsing concepts directly impact real-world interpreter behavior.
+
+\subsection{Lessons Learned}
+Working on these milestones taught me  lessons in language design, evaluation strategies, and debugging interpreters. The lectures on Abstract Reduction Systems (ARS) provided a theoretical framework that proved really helpful during implementation. 
+
+One critical takeaway was the importance of test case design. Creating tests for each operator's precedence and interaction uncovered subtle bugs that would have gone unnoticed otherwise.
+
+Additionally, this project demonstrated the power of recursion in both programming and problem-solving. Implementing recursive functions like insertion sort showed the efficiency of recursive thinking, while debugging recursive grammar rules showed the challenges of ensuring correctness.
+
+\subsection*{Group Conclusion}
+Through these group projects, I deepened my understanding of functional programming concepts, particularly lambda calculus, recursion, and lazy evaluation.
+
+
+
 
 \section*{Conclusion}
 In week one, we reviewed our discrete math knowledge and began coding proofs. Week two we saw the relationship between mathematical proofs and Lean code proofs, and then we began to solve problems recursively. In week three, I took a dive into quantum computing languages in my literature review while also working on coding a calculator using a recursive approach to solve parentheses. In week four, we explored parsing and context-free grammars, learning how to translate concrete syntax into abstract syntax, which is crucial for understanding how programming languages are processed. Week 5 used Lean as a way of proving logic puzzles. Week 6 built upon our logical foundations by focusing on implication in Lean Logic, proving logical statements. For week 7 we began to use lamda calculus to begin creating functions that could perform addition and multiplication. For weeks 8 and 9 we tackled a broken lambda calculus interpreter by identifying it's capture avoiding issues via the debugger. Week 10 we began to looking at ARS and breaking down how we reduce equations in a finite way. Week 11 we continued to look at ARS's and how to draw and describe them in order to understand how they work. Week 12 focused on modeling recursion in lambda calculus with fixed-point combinators. In week 13, we delved into the study of Abstract Reduction Systems (ARS) using string rewriting rules.
+This course offered the foundational principles of software engineering by emphasizing the theoretical pieces of programming languages and computational logic. By focusing on functional programming, lambda calculus, and Abstract Reduction Systems (ARS), it bridged the gap between abstract mathematics and practical software development. This connection to the theoretical roots of computing provided a deeper understanding of how programming languages are constructed and evaluated.
+
+From a broader perspective, the course aligns well with the core principles of software engineering, such as abstraction, modular design, and correctness. For example, the exploration of lazy evaluation strategies and fixed-point combinators demonstrated how theoretical constructs influence language design and optimization strategies used in modern software engineering. Understanding these principles is important for creating efficient and maintainable systems, particularly in fields like compiler design, language development, and algorithm optimization.
+
+What I found most interesting was the emphasis on recursion and its role in functional programming. Recursive thinking, both in language semantics and problem-solving, has applications far beyond academic exercises—it is integral to areas like distributed systems, data processing pipelines, and machine learning frameworks. Additionally, the course's approach to parsing and grammar design provided insight into the challenges of creating interpreters and compilers, which is really important to advancing in software engineering roles that focus on system-level programming or language tooling.
+
+Overall, the course was a challenging but rewarding exploration of computational theory and its applications in software engineering. It not only helped my technical knowledge but also broadened my perspective on how theory drives innovation in programming and software design.
+
+
+
+
+
+
 
 \end{document}
